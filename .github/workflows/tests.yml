@@ -3,66 +3,40 @@ name: Run tests
 on:
   push:
     branches:
-      - main
+      - "master"
   pull_request:
     branches:
-      - main
+      - "master"
 
 jobs:
-  main:
-    name: Run code quality checks
+  test:
     runs-on: ubuntu-latest
-    steps:
-    - name: Check out repository
-      uses: actions/checkout@v2
-    - name: Install Python 3.x
-      uses: actions/setup-python@v2
-      with:
-        python-version: "3.x"
-    - name: Install tox
-      run: pip install tox
-    - name: Run tests with coverage
-      run: tox -e coverage
-    - name: Check code formatting
-      run: tox -e black
-    - name: Check code style
-      run: tox -e flake8
-    - name: Check imports ordering
-      run: tox -e isort
-    - name: Check types statically
-      run: tox -e mypy
 
-  matrix:
-    name: Run tests on Python ${{ matrix.python }}
-    needs: main
-    runs-on: ubuntu-latest
     strategy:
       matrix:
-        python:
-          - "3.7"
-          - "3.8"
-          - "3.9"
-          - "3.10"
-          - "pypy-3.7"
-          - "pypy-3.8"
-          - "pypy-3.9"
-        is_main:
-          - ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        exclude:
-          - python: "pypy-3.7"
-            is_main: false
-          - python: "pypy-3.8"
-            is_main: false
-          - python: "pypy-3.9"
-            is_main: false
+        # Run in all these versions of Python
+        python-version: [3.5, 3.6, 3.7, 3.8, 3.9]
+
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v2
-    - name: Install Python ${{ matrix.python }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python }}
-    - name: Install tox
-      run: pip install tox
-    - name: Run tests
-      run: tox -e py
+        # Checkout the latest code from the repo
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        # Setup which version of Python to use
+      - name: Set Up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+        # Display the Python version being used
+      - name: Display Python version
+        run: python -c "import sys; print(sys.version)"
+        # Install the package using the setup.py
+      - name: Install package
+        run: python setup.py install
+        # Install pytest (you can use some other testing utility)
+      - name: Install pytest
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+        # Run the tests. I'm using pytest and the file is in the tests directory.
+      - name: Run tests
+        run: pytest tests/test*
