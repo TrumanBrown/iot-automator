@@ -1,7 +1,4 @@
-from __future__ import annotations
 import sys
-
-
 
 def checkName(name):
     if name == ("Truman"):
