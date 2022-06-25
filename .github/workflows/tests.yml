@@ -1,0 +1,68 @@
+name: Run tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  main:
+    name: Run code quality checks
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+    - name: Install Python 3.x
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.x"
+    - name: Install tox
+      run: pip install tox
+    - name: Run tests with coverage
+      run: tox -e coverage
+    - name: Check code formatting
+      run: tox -e black
+    - name: Check code style
+      run: tox -e flake8
+    - name: Check imports ordering
+      run: tox -e isort
+    - name: Check types statically
+      run: tox -e mypy
+
+  matrix:
+    name: Run tests on Python ${{ matrix.python }}
+    needs: main
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python:
+          - "3.7"
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "pypy-3.7"
+          - "pypy-3.8"
+          - "pypy-3.9"
+        is_main:
+          - ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        exclude:
+          - python: "pypy-3.7"
+            is_main: false
+          - python: "pypy-3.8"
+            is_main: false
+          - python: "pypy-3.9"
+            is_main: false
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+    - name: Install Python ${{ matrix.python }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python }}
+    - name: Install tox
+      run: pip install tox
+    - name: Run tests
+      run: tox -e py
