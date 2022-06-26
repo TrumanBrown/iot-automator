@@ -1,7 +1,7 @@
 import unittest.mock
 import unittest
-import sys
-sys.path.append('/mnt/c/Users/linct/Desktop/Code/TrumanBrown/iot-automator/truman')
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(sys.path[0]),'truman'))
 print(sys.path)
 from truman import checkName
 
