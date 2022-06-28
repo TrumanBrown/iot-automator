@@ -15,8 +15,8 @@ iot-automator
 .. |pypi-wheel| image:: https://img.shields.io/pypi/wheel/websockets.svg
     :target: https://pypi.python.org/pypi/websockets
 
-.. |tests| image:: https://img.shields.io/github/checks-status/aaugustin/websockets/main
-   :target: https://github.com/TrumanBrown/iot-automator/actions/workflows/tests.yml
+.. |tests| image:: https://github.com/TrumanBrown/iot-automator/actions/workflows/tests.yml/badge.svg
+   :target: https://github.com/TrumanBrown/iot-automator/actions/
    
 TODO change the above to point to ``iot-automator`` project
 
