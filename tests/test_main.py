@@ -10,7 +10,7 @@ class Test_Main(unittest.TestCase):
     print(sys.path)
     def test_checkName(self):
         response=checkName("Truman")
-        self.assertEqual(response, "Awesome! :)")
+        self.assertEqual(response, "Awesome! :(")
 
 if __name__ == '__main__':
     unittest.main()
